@@ -20,9 +20,10 @@ interface Competitor {
 }
 
 export interface Game {
-  awayScore: number | undefined;
   date: Date;
   homeScore: number | undefined;
+  awayScore: number | undefined;
+  teamId: string;
   rank: number;
   logo: string;
   color: string;
@@ -74,6 +75,7 @@ export async function getTeamData(teamId: string): Promise<Team> {
       const color =
         otherTeam.team.displayName === 'Iowa Hawkeyes' ? '000000' : 'TODO';
 
+      // Some teams don't have logos, use the default
       const logo = otherTeam.team.logos
         ? otherTeam.team.logos[0].href
         : 'https://a.espncdn.com/i/teamlogos/default-team-logo-500.png';
@@ -81,6 +83,8 @@ export async function getTeamData(teamId: string): Promise<Team> {
       return {
         date: new Date(event.competitions[0].date),
         name: otherTeam.team.displayName,
+        teamId: otherTeam.team.id,
+        rank: otherTeam.curatedRank.current,
         logo,
         color,
         homeScore: favoriteTeam?.score?.value,
